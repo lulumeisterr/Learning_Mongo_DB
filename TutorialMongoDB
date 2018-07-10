@@ -1,0 +1,118 @@
+Uma situação onde o MongoDB é bastante usado é quando precisamos realizar buscas por proximidade, como, por exemplo, localizar a pizzaria mais próxima de você.
+
+Situações onde o uso do MongoDB não é indicado são cenários onde precisamos fazer muitas operações de agregação em uma única query, isso tem muito custo para o MongoDB.
+
+
+---------------------------------------------------------------------------------------
+
+Criando a Tabela 
+
+db.createCollection("Nome da tabela")
+
+-------------------------------------------------------------------------
+
+Inserindo na Tabela Alunos
+
+db.tabela.insert({
+	"nome" : "Lucas" ,
+	"data_nascimento" : new Date(1998,02,27) ,
+	"curso" : {
+		"nome" : "Analise Dev Sistemas"
+	},
+	"notas" : [10.0 , 9.0 , 4.5] , 
+	"habilidades" : [
+
+	{
+		"nome" : "inglês" ,
+		"nivel" : "Intermediario"
+	},
+
+	{
+		"nome" : "Nodejs" ,
+		"nivel" : "Basico"
+	}
+
+	]
+})
+
+---------------------------------------------------------------------------
+
+Retornando todas as tabelas
+
+db.tabela.find()
+
+db.tabela.find().pretty() - Traz os objetos formatados
+
+
+----------------------------------------------------------------------------
+
+Removendo valores da tabela
+
+db.tabela.remove({
+	"_id" : ObjectId("5b44c9bff6cd598ed6ffb827")
+})
+
+
+----------------------------------------------------------------------------------------
+
+Buscando por Alunos por habilidades e O nivel seja avançado
+
+db.alunos.find({
+	"habilidades.nivel" : "avancado" , 
+	"habilidades.nome" : "inglês"
+}).pretty()
+
+--------------------------------------------------------------------------------=
+
+Buscando por Alunos em uma unica query , Alunos que sejam de TI ou Engenharia
+
+- Você deve isolar cada query em um objeto
+
+- Ex : 
+
+    
+       curso" : {"nome" : "Analise Dev Sistemas"},
+       curso" : {"nome" : "Engenharia Quimica"}
+    
+
+- Depois você deve por os objetos dentro de um array
+
+db.alunos.find({
+    [
+       curso" : {"nome" : "Analise Dev Sistemas"},
+       curso" : {"nome" : "Engenharia Quimica"}
+    ]
+})
+
+- e Passa o Operador antes do conchetes do Array
+
+db.alunos.find({
+    $or : [
+       curso" : {"nome" : "Analise Dev Sistemas"},
+       curso" : {"nome" : "Engenharia Quimica"}
+    ] ,
+
+    # E Quero que traga Mais alguma coisa no Caso Quero traga o Lucas no curso de DEV.
+
+    "nome" : "Lucas"
+
+})
+
+------------------------------------------------------------------------------------------------------
+
+Utilizando o operador IN
+
+	IN = OU um Ou Outro EX : Estar dentro de 5 OU 15 e não entre 5 ou 15
+
+
+db.alunos.find({
+	"curso.nome" : { 
+		$in : ["Sistemas da Informacao", "Engenharia Quimica"]
+})
+
+---------------------------------------------------------------------------------
+
+
+
+
+
